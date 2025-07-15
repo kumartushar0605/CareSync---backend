@@ -14,10 +14,8 @@ connectDB();
 // ✅ Set up CORS for local and deployed frontend
 const allowedOrigins = [
   "http://localhost:3000",
-  "http://localhost:3001",
   "https://care-sync-frontend-nine.vercel.app",
-  "https://healthcaremangementplatformbackend.onrender.com", // backend (optional)
-  "https://health-care-mangement-platform-fron.vercel.app" // (Optional: add frontend domain when deployed)
+  
 ];
 
 app.use(cors({
