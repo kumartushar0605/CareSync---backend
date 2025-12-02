@@ -9,4 +9,6 @@ routerr.post("/Vistor/Login",VisitorLogin);
 routerr.post('/Visitor/pincode', GetHospital);
 
 
+
+
 export default routerr;
