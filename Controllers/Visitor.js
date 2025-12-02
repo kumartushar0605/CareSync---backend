@@ -1,6 +1,9 @@
 import { HospitalSchema } from "../models/Hospital.js";
 import {VisitorSchema} from "../models/Visitor.js"
 import { sendCookie } from "../utils/features.js";
+import { GoogleGenAI } from "@google/genai";
+const ai = new GoogleGenAI({ apiKey: process.env.GEN_AI_KEY });
+
 
 export const Visitorregister = async(req,res)=>{
     try {
@@ -74,3 +77,35 @@ export const GetHospital = async (req, res) => {
       res.status(500).json({ message: "Server error", error });
     }
   };
+
+export const AnalyzeSymptoms = async (req, res) => {
+  try {
+    const { symptoms } = req.body;
+
+    if (!symptoms) {
+      return res.status(400).json({ message: "Symptoms are required" });
+    }
+
+    const prompt = `
+      Identify the medical department required for these symptoms: "${symptoms}".
+      Like
+      Pediatrics, Dermatology, General Medicine, Cardiology, Neurology, Orthopedics,
+      Emergency, Surgery, ENT, Radiology, ICU.
+      Return ONLY the department name.
+    `;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.0-flash",
+      contents: prompt,
+    });
+
+    const department =
+      response.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+
+    return res.json({ department });
+
+  } catch (error) {
+    console.error("AI Error:", error);
+    res.status(500).json({ message: "AI failed", error: error.message });
+  }
+};
